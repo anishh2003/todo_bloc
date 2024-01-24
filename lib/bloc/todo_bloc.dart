@@ -46,6 +46,23 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     // emit(TodoLoading());
     try {
       final state = this.state;
+      // if (state is TodoLoaded) {
+      //   List<ToDo> tempList = List.from(state.todoList);
+      //   for (int index = 0; index < tempList.length; index++) {
+      //     if (index == event.index) {
+      //       tempList[index].isDone = !tempList[index].isDone;
+      //     }
+      //   }
+      //   emit(TodoLoaded(todoList: tempList));
+
+      //   // state.todoList.asMap().entries.map((entry) {
+      //   //   int index = entry.key;
+      //   //   if (index == event.index) {
+      //   //     state.todoList[index].isDone = !state.todoList[index].isDone;
+      //   //   }
+      //   //   return state.todoList;
+      //   // });
+      // }
 
       if (state is TodoLoaded) {
         List<ToDo> tasks = (state.todoList.map((task) {
