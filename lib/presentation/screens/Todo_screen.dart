@@ -153,10 +153,11 @@ class _ToDoPageState extends State<ToDoPage> {
                                 value: state.todoList[index].isDone,
                                 onChanged: (value) {
                                   context.read<TodoBloc>().add(UpdateToDo(
-                                      todo: state.todoList[index].copyWith(
-                                          isDone:
-                                              !state.todoList[index].isDone),
-                                      // todo: state.todoList[index],
+                                      // todo:
+                                      // state.todoList[index].copyWith(
+                                      //     isDone:
+                                      //         !state.todoList[index].isDone),
+                                      todo: state.todoList[index],
                                       index: index));
                                 },
                               ),
