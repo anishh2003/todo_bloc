@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:todo_bloc/bloc/todo_bloc.dart';
 import 'package:todo_bloc/presentation/screens/ToDo_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: await getApplicationDocumentsDirectory(),
+  );
   runApp(const MainApp());
 }
 
@@ -26,7 +32,7 @@ class MainApp extends StatelessWidget {
       ),
       home: Scaffold(
         body: BlocProvider<TodoBloc>(
-          create: (context) => TodoBloc()..add(const LoadToDos()),
+          create: (context) => TodoBloc(),
           child: const ToDoPage(),
         ),
       ),
