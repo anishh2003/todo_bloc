@@ -47,9 +47,8 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     try {
       final state = this.state;
       if (state is TodoLoaded) {
-        List<ToDo> tempList = List.from(state.todoList)..remove(event.todo);
-        tempList.insert(
-            event.index, event.todo.copyWith(isDone: !event.todo.isDone));
+        List<ToDo> tempList = List.from(state.todoList);
+        tempList[event.index] = event.todo.copyWith(isDone: !event.todo.isDone);
         emit(TodoLoaded(todoList: tempList));
       }
     } catch (e) {
