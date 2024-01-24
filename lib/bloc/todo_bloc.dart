@@ -32,7 +32,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     try {
       final state = this.state;
       if (state is TodoLoaded) {
-        emit(TodoLoaded(todoList: [event.todo, ...state.todoList]));
+        emit(TodoLoaded(todoList: [...state.todoList, event.todo]));
       }
     } catch (e) {
       emit(TodoError(error: e.toString()));
@@ -46,21 +46,12 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     // emit(TodoLoading());
     try {
       final state = this.state;
-      if (state is TodoLoaded) {
-        for (int index = 0; index < state.todoList.length; index++) {
-          if (index == event.index) {
-            state.todoList[index].isDone = !state.todoList[index].isDone;
-          }
-        }
 
-        List<ToDo> newList = state.todoList.where((element) {
-          if (element.title == state.todoList[event.index].title) {
-            return element.isDone = !element.isDone;
-          } else {
-            return element.isDone;
-          }
-        }).toList();
-        emit(TodoLoaded(todoList: newList));
+      if (state is TodoLoaded) {
+        List<ToDo> tasks = (state.todoList.map((task) {
+          return task.title == event.todo.title ? event.todo : task;
+        })).toList();
+        emit(TodoLoaded(todoList: tasks));
       }
     } catch (e) {
       emit(TodoError(error: e.toString()));

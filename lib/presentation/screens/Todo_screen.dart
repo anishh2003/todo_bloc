@@ -145,20 +145,19 @@ class _ToDoPageState extends State<ToDoPage> {
                                 ),
                               ],
                             ),
-                            key: ValueKey(state.todoList[index].title),
+                            key: ValueKey(index),
                             child: ListTile(
                               title: Text(state.todoList[index].title),
                               subtitle: Text(state.todoList[index].description),
                               trailing: Checkbox(
                                 value: state.todoList[index].isDone,
-                                onChanged: (_) {
-                                  context
-                                      .read<TodoBloc>()
-                                      .add(UpdateToDo(index: index));
-                                  // setState(() {
-                                  //   state.todoList[index].isDone =
-                                  //       !state.todoList[index].isDone;
-                                  // });
+                                onChanged: (value) {
+                                  context.read<TodoBloc>().add(UpdateToDo(
+                                      todo: state.todoList[index].copyWith(
+                                          isDone:
+                                              !state.todoList[index].isDone),
+                                      // todo: state.todoList[index],
+                                      index: index));
                                 },
                               ),
                             ),

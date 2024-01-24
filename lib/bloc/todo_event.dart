@@ -26,14 +26,16 @@ class AddToDo extends TodoEvent {
 }
 
 class UpdateToDo extends TodoEvent {
+  final ToDo todo;
   final int index;
 
   const UpdateToDo({
+    required this.todo,
     required this.index,
   });
 
   @override
-  List<Object> get props => [index];
+  List<Object> get props => [todo, index];
 }
 
 class DeleteToDo extends TodoEvent {

@@ -41,19 +41,20 @@ class ToDo {
 
   String toJson() => json.encode(toMap());
 
-  factory ToDo.fromJson(String source) => ToDo.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ToDo.fromJson(String source) =>
+      ToDo.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'ToDo(title: $title, description: $description, isDone: $isDone)';
+  String toString() =>
+      'ToDo(title: $title, description: $description, isDone: $isDone)';
 
   @override
   bool operator ==(covariant ToDo other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.title == title &&
-      other.description == description &&
-      other.isDone == isDone;
+
+    return other.title == title &&
+        other.description == description &&
+        other.isDone == isDone;
   }
 
   @override
