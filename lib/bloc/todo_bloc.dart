@@ -5,7 +5,7 @@ part 'todo_event.dart';
 part 'todo_state.dart';
 
 class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
-  TodoBloc() : super(const TodoLoaded(todoList: [])) {
+  TodoBloc() : super(const TodoInitial([])) {
     on<LoadToDos>(_onLoadToDo);
     on<AddToDo>(_addToDo);
     on<UpdateToDo>(_updateToDo);
@@ -13,107 +13,76 @@ class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
   }
 
   void _onLoadToDo(LoadToDos event, Emitter<TodoState> emit) {
-    emit(TodoLoading());
+    emit(const TodoLoading([]));
     try {
       // final tasks = await _taskRepository.getTask();
-      emit(const TodoLoaded(todoList: []));
-      //  emit(TodoLoaded(
-      //   todoList: [ToDo(title: 'hi', description: 'kk', isDone: false)]));
+      emit(const TodoLoaded([]));
     } catch (e) {
-      emit(TodoError(error: e.toString()));
+      emit(TodoError(error: e.toString(), const []));
     }
   }
 
   void _addToDo(
     AddToDo event,
     Emitter<TodoState> emit,
-  ) {
-    // emit(TodoLoading());
+  ) async {
+    emit(TodoLoading(state.todoList));
+    await Future.delayed(const Duration(milliseconds: 500));
+
     try {
-      final state = this.state;
-      if (state is TodoLoaded) {
-        emit(TodoLoaded(todoList: [...state.todoList, event.todo]));
-      }
+      emit(TodoLoaded([...state.todoList, event.todo]));
     } catch (e) {
-      emit(TodoError(error: e.toString()));
+      emit(TodoError(error: e.toString(), const []));
     }
   }
 
   void _updateToDo(
     UpdateToDo event,
     Emitter<TodoState> emit,
-  ) {
-    // emit(TodoLoading());
+  ) async {
     try {
-      final state = this.state;
-      if (state is TodoLoaded) {
-        List<ToDo> tempList = List.from(state.todoList);
-        tempList[event.index] = event.todo.copyWith(isDone: !event.todo.isDone);
-        emit(TodoLoaded(todoList: tempList));
-      }
+      List<ToDo> tempList = List.from(state.todoList);
+      tempList[event.index] = event.todo.copyWith(isDone: !event.todo.isDone);
+      emit(TodoLoaded(tempList));
     } catch (e) {
-      emit(TodoError(error: e.toString()));
+      emit(TodoError(error: e.toString(), const []));
     }
   }
 
   void _deleteToDo(
     DeleteToDo event,
     Emitter<TodoState> emit,
-  ) {
-    // emit(TodoLoading());
+  ) async {
+    emit(TodoLoading(state.todoList));
+    await Future.delayed(const Duration(milliseconds: 500));
     try {
-      final state = this.state;
-
-      if (state is TodoLoaded) {
-        List<ToDo> tempList = state.todoList.toList();
-        tempList.removeAt(event.index);
-        emit(TodoLoaded(todoList: tempList));
-      }
+      List<ToDo> tempList = state.todoList.toList();
+      tempList.removeAt(event.index);
+      emit(TodoLoaded(tempList));
     } catch (e) {
-      emit(TodoError(error: e.toString()));
+      emit(TodoError(error: e.toString(), const []));
+    }
+  }
+
+  @override
+  TodoState? fromJson(Map<String, dynamic> json) {
+    try {
+      final todoList = (json['todoList'] as List<dynamic>?)
+              ?.map((item) => ToDo.fromMap(item as Map<String, dynamic>))
+              .toList() ??
+          [];
+      return TodoState.fromJson(todoList);
+    } catch (error) {
+      return null;
     }
   }
 
   @override
   Map<String, dynamic>? toJson(TodoState state) {
     try {
-      if (state is TodoLoading) {
-        return {'type': 'TodoLoading'};
-      } else if (state is TodoLoaded) {
-        return {
-          'type': 'TodoLoaded',
-          'todoList': state.todoList.map((todo) => todo.toMap()).toList()
-        };
-      } else if (state is TodoError) {
-        return {'type': 'TodoError', 'error': state.error};
-      }
-    } catch (e) {
-      // Handle any conversion errors
-      print('Error converting TodoState to JSON: $e');
+      return state.toJson();
+    } catch (error) {
+      return null;
     }
-    return null;
-  }
-
-  @override
-  TodoState? fromJson(Map<String, dynamic> json) {
-    try {
-      final String type = json['type'];
-      switch (type) {
-        case 'TodoLoading':
-          return TodoLoading();
-        case 'TodoLoaded':
-          final List<dynamic> todoListJson = json['todoList'];
-          final List<ToDo> todoList =
-              todoListJson.map((todoJson) => ToDo.fromMap(todoJson)).toList();
-          return TodoLoaded(todoList: todoList);
-        case 'TodoError':
-          final String error = json['error'];
-          return TodoError(error: error);
-      }
-    } catch (e) {
-      // Handle any conversion errors
-      print('Error converting JSON to TodoState: $e');
-    }
-    return null;
   }
 }
