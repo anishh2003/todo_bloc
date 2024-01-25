@@ -4,12 +4,14 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:todo_bloc/bloc/todo_bloc.dart';
 import 'package:todo_bloc/presentation/screens/ToDo_screen.dart';
+import 'package:todo_bloc/simple_bloc_observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getApplicationDocumentsDirectory(),
   );
+  Bloc.observer = SimpleBlocObserver();
   runApp(const MainApp());
 }
 
