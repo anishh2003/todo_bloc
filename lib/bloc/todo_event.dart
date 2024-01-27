@@ -1,5 +1,26 @@
 part of 'todo_bloc.dart';
 
+// @freezed
+// class TodoEvent with _$TodoEvent {
+//   const factory TodoEvent.loadToDos() = LoadToDos;
+//   const factory TodoEvent.addToDo() = AddToDo;
+//   const factory TodoEvent.updateToDo() = UpdateToDo;
+//   const factory TodoEvent.deleteToDo() = DeleteToDo;
+
+//   factory TodoEvent.fromJson(Map<String, dynamic> json) =>
+//       _$TodoEventFromJson(json);
+// }
+
+// class TodoEvent with _$TodoEvent {
+//   // const factory TodoEvent.loadToDos(ToDo todos = const <ToDo>[]) = LoadToDos;
+//   const factory TodoEvent.addToDo({required ToDo todo}) = AddToDo;
+//   const factory TodoEvent.updateToDo({required ToDo todo, required int index}) = UpdateToDo;
+//   const factory TodoEvent.deleteToDo(required int index) = DeleteToDo;
+
+//   factory TodoEvent.fromJson(Map<String, dynamic> json) =>
+//       _$TodoEventFromJson(json);
+// }
+
 sealed class TodoEvent extends Equatable {
   const TodoEvent();
 

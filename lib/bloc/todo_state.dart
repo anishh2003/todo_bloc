@@ -23,7 +23,7 @@ sealed class TodoState extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
-    return {'todoList': todoList.map((todo) => todo.toMap()).toList()};
+    return {'todoList': todoList.map((todo) => todo.toJson()).toList()};
   }
 
   @override
