@@ -1,11 +1,10 @@
 import 'package:equatable/equatable.dart';
-// import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-// import 'package:todo_bloc/bloc/todo_event.dart';
 import 'package:todo_bloc/models/todo_model.dart';
 
-// part 'todo_bloc.freezed.dart';
-// part 'todo_bloc.g.dart';
+part 'todo_bloc.freezed.dart';
+part 'todo_bloc.g.dart';
 part 'todo_event.dart';
 part 'todo_state.dart';
 
