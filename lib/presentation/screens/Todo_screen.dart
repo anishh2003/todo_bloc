@@ -112,7 +112,7 @@ class _ToDoPageState extends State<ToDoPage> {
               if (state is TodoLoading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is TodoInitial) {
-                return Center(child: Text('${state.todoList.length}'));
+                return const Center(child: Text('Initial State'));
               } else if (state is TodoLoaded) {
                 return Flexible(
                   child: ListView.builder(
