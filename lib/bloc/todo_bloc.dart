@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:todo_bloc/models/todo_model.dart';
@@ -9,7 +8,7 @@ part 'todo_event.dart';
 part 'todo_state.dart';
 
 class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
-  TodoBloc() : super(const TodoInitial([])) {
+  TodoBloc() : super(const TodoState.initial([])) {
     on<LoadToDos>(_onLoadToDo);
     on<AddToDo>(_addToDo);
     on<UpdateToDo>(_updateToDo);
@@ -17,12 +16,12 @@ class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
   }
 
   void _onLoadToDo(LoadToDos event, Emitter<TodoState> emit) {
-    emit(const TodoLoading([]));
+    emit(const TodoState.initial([]));
     try {
       // final tasks = await _taskRepository.getTask();
-      emit(const TodoLoaded([]));
+      emit(const TodoState.loaded([]));
     } catch (e) {
-      emit(TodoError(error: e.toString(), const []));
+      emit(TodoState.error(error: e.toString(), const []));
     }
   }
 
@@ -30,13 +29,13 @@ class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
     AddToDo event,
     Emitter<TodoState> emit,
   ) async {
-    emit(TodoLoading(state.todoList));
+    emit(TodoState.loading(state.todoList));
     await Future.delayed(const Duration(milliseconds: 500));
 
     try {
-      emit(TodoLoaded([...state.todoList, event.todo]));
+      emit(TodoState.loaded([...state.todoList, event.todo]));
     } catch (e) {
-      emit(TodoError(error: e.toString(), const []));
+      emit(TodoState.error(error: e.toString(), const []));
     }
   }
 
@@ -47,9 +46,9 @@ class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
     try {
       List<ToDo> tempList = List.from(state.todoList);
       tempList[event.index] = event.todo.copyWith(isDone: !event.todo.isDone);
-      emit(TodoLoaded(tempList));
+      emit(TodoState.loaded(tempList));
     } catch (e) {
-      emit(TodoError(error: e.toString(), const []));
+      emit(TodoState.error(error: e.toString(), const []));
     }
   }
 
@@ -57,25 +56,25 @@ class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
     DeleteToDo event,
     Emitter<TodoState> emit,
   ) async {
-    emit(TodoLoading(state.todoList));
+    emit(TodoState.loading(state.todoList));
     await Future.delayed(const Duration(milliseconds: 500));
     try {
       List<ToDo> tempList = state.todoList.toList();
       tempList.removeAt(event.index);
-      emit(TodoLoaded(tempList));
+      emit(TodoState.loaded(tempList));
     } catch (e) {
-      emit(TodoError(error: e.toString(), const []));
+      emit(TodoState.error(error: e.toString(), const []));
     }
   }
 
   @override
   TodoState? fromJson(Map<String, dynamic> json) {
     try {
-      final todoList = (json['todoList'] as List<dynamic>?)
-              ?.map((item) => ToDo.fromJson(item as Map<String, dynamic>))
-              .toList() ??
-          [];
-      return TodoState.fromJson(todoList);
+      // final todoList = (json['todoList'] as List<dynamic>?)
+      //         ?.map((item) => ToDo.fromJson(item as Map<String, dynamic>))
+      //         .toList() ??
+      //     [];
+      return TodoState.fromJson(json['todoList']);
     } catch (error) {
       return null;
     }

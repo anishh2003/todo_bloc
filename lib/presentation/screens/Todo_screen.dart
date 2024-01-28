@@ -108,16 +108,12 @@ class _ToDoPageState extends State<ToDoPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
-            if (state is TodoLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is TodoError) {
-              return Center(child: Text(state.error));
-            } else if (state is TodoLoaded) {
-              if (state.todoList.isEmpty) {
-                return const Center(child: Text('No Task Found'));
-              }
-
-              return Flexible(
+            return state.when(
+              initial: (todoList) =>
+                  const Center(child: CircularProgressIndicator()),
+              loading: (todoList) =>
+                  const Center(child: CircularProgressIndicator()),
+              loaded: (todoList) => Flexible(
                 child: ListView.builder(
                     itemCount: state.todoList.length,
                     itemBuilder: (context, index) {
@@ -162,13 +158,83 @@ class _ToDoPageState extends State<ToDoPage> {
                         ),
                       );
                     }),
-              );
-            } else {
-              return const Center(child: Text('No Task Found'));
-            }
+              ),
+              updated: (todoList) => const SizedBox.shrink(),
+              deleted: (todoList) => const SizedBox.shrink(),
+              error: (todoList, error) => Center(child: Text(error)),
+            );
           }),
         ],
       ),
     );
   }
 }
+
+
+
+
+// switch (state.runtimeType) {
+//               case TodoInitial(:final todoList):
+//                 const Center(child: CircularProgressIndicator());
+//               case TodoLoading(:final todoList):
+//                 print("The list items are: ");
+//                 print(todoList);
+//                 const Center(child: CircularProgressIndicator());
+//               case TodoError(:final todoList, :final error):
+//                 Center(child: Text(error));
+//               case TodoLoaded():
+//                 return Flexible(
+//                   child: ListView.builder(
+//                       itemCount: state.todoList.length,
+//                       itemBuilder: (context, index) {
+//                         return Padding(
+//                           padding: const EdgeInsets.all(10.0),
+//                           child: Card(
+//                             child: Slidable(
+//                               endActionPane: ActionPane(
+//                                 motion: ScrollMotion(),
+//                                 children: [
+//                                   SlidableAction(
+//                                     // An action can be bigger than the others.
+//                                     flex: 2,
+
+//                                     backgroundColor: Colors.red,
+//                                     foregroundColor: Colors.white,
+//                                     icon: Icons.delete,
+//                                     label: 'Delete',
+//                                     onPressed: (_) {
+//                                       // removeTodo(state.todos[i]);
+//                                       context
+//                                           .read<TodoBloc>()
+//                                           .add(DeleteToDo(index: index));
+//                                     },
+//                                   ),
+//                                 ],
+//                               ),
+//                               key: ValueKey(index),
+//                               child: ListTile(
+//                                 title: Text(state.todoList[index].title),
+//                                 subtitle:
+//                                     Text(state.todoList[index].description),
+//                                 trailing: Checkbox(
+//                                   value: state.todoList[index].isDone,
+//                                   onChanged: (value) {
+//                                     context.read<TodoBloc>().add(UpdateToDo(
+//                                         todo: state.todoList[index],
+//                                         index: index));
+//                                   },
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                         );
+//                       }),
+//                 );
+//               case TodoUpdated(:final todoList):
+//               case TodoDeleted(:final todoList):
+//                 return const SizedBox.shrink();
+//               // break;
+//               default:
+//                 const Center(child: Text('No Task Found'));
+//             }
+//             return const Center(child: Text('No Task Found'));
