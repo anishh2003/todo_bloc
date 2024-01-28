@@ -16,7 +16,7 @@ class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
   }
 
   void _onLoadToDo(LoadToDos event, Emitter<TodoState> emit) {
-    emit(const TodoState.initial([]));
+    emit(const TodoState.loading([]));
     try {
       // final tasks = await _taskRepository.getTask();
       emit(const TodoState.loaded([]));
