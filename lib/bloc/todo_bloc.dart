@@ -68,15 +68,15 @@ class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
   }
 
   @override
-  TodoState? fromJson(Map<String, dynamic> json) {
+  TodoState fromJson(Map<String, dynamic> json) {
     try {
-      // final todoList = (json['todoList'] as List<dynamic>?)
-      //         ?.map((item) => ToDo.fromJson(item as Map<String, dynamic>))
-      //         .toList() ??
-      //     [];
-      return TodoState.fromJson(json['todoList']);
+      final todoList = (json['todoList'] as List<dynamic>?)
+              ?.map((item) => ToDo.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [];
+      return TodoState.loaded(todoList);
     } catch (error) {
-      return null;
+      return const TodoState.initial([]); // Fallback to initial state on error
     }
   }
 
