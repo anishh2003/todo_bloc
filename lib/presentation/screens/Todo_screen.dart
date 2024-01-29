@@ -109,61 +109,71 @@ class _ToDoPageState extends State<ToDoPage> {
         children: [
           BlocBuilder<TodoBloc, TodoState>(
             builder: (context, state) {
-              if (state is TodoLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is TodoInitial) {
-                return const Center(child: Text('Initial State'));
-              } else if (state is TodoLoaded) {
-                return Flexible(
-                  child: ListView.builder(
-                    itemCount: state.todoList.length,
-                    itemBuilder: (context, index) {
-                      final todo = state.todoList[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Card(
-                          child: Slidable(
-                            endActionPane: ActionPane(
-                              motion: ScrollMotion(),
-                              children: [
-                                SlidableAction(
-                                  flex: 2,
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: Colors.white,
-                                  icon: Icons.delete,
-                                  label: 'Delete',
-                                  onPressed: (_) {
-                                    context
-                                        .read<TodoBloc>()
-                                        .add(DeleteToDo(index: index));
+              switch (state) {
+                case TodoInitial():
+                  return const Center(child: Text('No Task Found'));
+                case TodoLoading():
+                  return const Center(child: CircularProgressIndicator());
+
+                case TodoLoaded():
+                  return Flexible(
+                    child: ListView.builder(
+                      itemCount: state.todoList.length,
+                      itemBuilder: (context, index) {
+                        final todo = state.todoList[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Card(
+                            child: Slidable(
+                              endActionPane: ActionPane(
+                                motion: ScrollMotion(),
+                                children: [
+                                  SlidableAction(
+                                    flex: 2,
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    icon: Icons.delete,
+                                    label: 'Delete',
+                                    onPressed: (_) {
+                                      context
+                                          .read<TodoBloc>()
+                                          .add(DeleteToDo(index: index));
+                                    },
+                                  ),
+                                ],
+                              ),
+                              key: ValueKey(index),
+                              child: ListTile(
+                                title: Text(todo.title),
+                                subtitle: Text(todo.description),
+                                trailing: Checkbox(
+                                  value: todo.isDone,
+                                  onChanged: (value) {
+                                    context.read<TodoBloc>().add(
+                                          UpdateToDo(todo: todo, index: index),
+                                        );
                                   },
                                 ),
-                              ],
-                            ),
-                            key: ValueKey(index),
-                            child: ListTile(
-                              title: Text(todo.title),
-                              subtitle: Text(todo.description),
-                              trailing: Checkbox(
-                                value: todo.isDone,
-                                onChanged: (value) {
-                                  context.read<TodoBloc>().add(
-                                        UpdateToDo(todo: todo, index: index),
-                                      );
-                                },
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              } else if (state is TodoError) {
-                return Center(child: Text((state as TodoError).error));
-              } else {
-                return const Center(child: Text('No Task Found'));
+                        );
+                      },
+                    ),
+                  );
+
+                case TodoUpdated():
+                  break;
+
+                case TodoDeleted():
+                  break;
+                case TodoError():
+                  return Center(child: Text((state as TodoError).error));
+                default:
+                  return const Center(child: Text('Unknown State'));
               }
+              // Ensure a Widget is returned for all cases
+              return const Center(child: Text('Unhandled State'));
             },
           )
         ],
